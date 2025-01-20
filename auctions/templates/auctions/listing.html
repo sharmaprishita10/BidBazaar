@@ -1,0 +1,114 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    {{listing.title}} |
+{% endblock %}
+
+{% block body %}
+    <div>   <!--main div-->
+        {% if not listing.active %}
+            {% if request.user.is_authenticated and request.user == winner %}
+                <div class="alert alert-success" role="alert">Congratulations! You have won the auction.</div>
+            {% else %}
+                <div class="alert alert-secondary" role="alert">The auction listing is no longer active.</div>
+            {% endif %}
+        {% endif %}
+        <div>       <!--for title div-->
+            <h2>{{listing.title}}</h2>
+        </div>
+        <div class="row mb-4">   <!--second div-->
+            <div class="col-8">       <!--for category-->
+                <h5 class="text-secondary">{{ listing.category }}</h5>
+            </div>
+            {% if request.user.is_authenticated and request.user == listing.owner and listing.active %}
+                <div class="col-4">
+                    <form action="{% url 'end_auction' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="End the auction" class="ms-5 btn btn-danger">
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="row mb-3">       <!--third div-->
+            <div class="col col-lg-4 col-sm-6">       <!--for image-->
+                {% if listing.image %}
+                    <img src = "{{ listing.image }}" alt = "Item Image" class="img-fluid">
+                {% else %}
+                    <img src = "https://lh3.googleusercontent.com/proxy/UrU1-G0C3TdaO9pbfM0kziiRDFgYYiWSaicnFqr-xbKJPHVR5LA27Pysr9BhbgQdec-zL773PA0p_DM8C2lnBJLyo9mPqm0WmifWhBcq8wKjJTo7qE3w3osCgBYFVXQ" alt = "Item Image" class="img-fluid">
+                {% endif %}
+            </div>
+            <div class="col col-lg-8 col-sm-6 p-5">       <!--for product info-->
+                <h3>{{listing.description}}</h3>
+                Auction started at US${{ listing.starting_bid }}<br>
+                {% for dict in bid_list %}      <!--same logic for current bid-->
+                    {% if dict.listing == listing.id %}
+                        {% if not listing.active %}
+                            <b>Winning Bid: US${{ dict.max_bid|floatformat:-2 }}</b> |
+                        {% else %}
+                            <b>Current Bid: US${{ dict.max_bid|floatformat:-2 }}</b> |
+                        {% endif %}
+                    {% endif %} 
+                {% endfor %}
+    
+                {% for dict in bids %}      <!--same logic for no of bids-->
+                    {% if dict.listing == listing.id %}
+                        {{dict.bid_count}} bid(s) so far <br>
+                    {% endif %}
+                {% endfor %}
+    
+                {% for dict in watchers %}      <!--same logic for watchers-->
+                    {% if dict.listing == listing.id %}
+                    <span class="badge bg-secondary rounded-pill">{{dict.user_count}} watching</span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if listing.active %}
+                    <div class="row mt-4">
+                        <div class="col-6">       <!--for placing bid-->
+                            <form action = "{% url 'listing' listing.id %}" method = "post">
+                                {% csrf_token %}
+                                US$ {{ bid_form }}<br>
+                                <p>{{ tag_line }}</p>
+                                <input type="submit" class="btn btn-primary" value="Place Bid">
+                            </form>
+                        </div>
+                    
+                        <div class="col-6">       <!--for watchlist-->
+                            <form action = "{% url 'update_watch' listing.id %}" method="post">
+                                {% csrf_token %}<br><br><br>
+                                <input type="submit" class="btn btn-warning rounded-pill" value = "{{ watchlist_title }}">
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+
+        <div class="mt-2 mb-5">       <!--for seller info-->
+            {% if request.user.is_authenticated and request.user == listing.owner %}
+                Created by <b>You</b><br>
+                on {{ listing.date }}
+            {% else %}
+                Created by <b>{{ listing.owner }}</b><br>
+                on {{ listing.date }}
+            {% endif %}
+        </div>
+        
+        <h4>Customer Reviews</h4>
+        <div class="my-3 w-50 text-end">   <!--for comment form-->
+            <form action = "{% url 'comment' listing.id %}" method = "post">
+                {% csrf_token %}
+                <textarea name = "comment" class="form-control mb-3" placeholder="Share your thoughts here.."></textarea>
+                <input type="submit" class="btn btn-warning" value="Add Comment">
+            </form>
+        </div>
+        {% for comment in comments %}
+            <div class="row my-3 p-2 mx-1 border shadow-sm">
+                <div class="col-3">By {{ comment.user }}<br>{{ comment.comment_date }}</div>
+                <div class="col-9 border shadow-sm">{{ comment.comment }}</div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

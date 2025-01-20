@@ -1,0 +1,36 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Watchlist |
+{% endblock %}
+
+{% block body %}
+    <h2>Watchlist</h2>
+    <div class="container">       <!--Used BootStrap's column model-->
+        {% for item in watchlist %}
+            <a href="{% url 'listing' item.listing.id %}" class="text-decoration-none link-secondary">
+                <div class="row m-3 p-3 border shadow-sm" >
+                    <div class="col col-lg-3 col-sm-6">
+                        {% if item.listing.image %}
+                            <img src = "{{ item.listing.image }}" alt = "Item Image" class="img-fluid">
+                        {% else %}
+                            <!--Default image-->
+                            <img src = "https://lh3.googleusercontent.com/proxy/UrU1-G0C3TdaO9pbfM0kziiRDFgYYiWSaicnFqr-xbKJPHVR5LA27Pysr9BhbgQdec-zL773PA0p_DM8C2lnBJLyo9mPqm0WmifWhBcq8wKjJTo7qE3w3osCgBYFVXQ" alt = "Item Image" class="img-fluid">
+                        {% endif %}
+                    </div>
+                    <div class="col col-lg-9 col-sm-6">
+                        <h5>{{ item.listing.title }}</h5>
+                        <p>{{ item.listing.description }}</p>
+
+                        <!--If the listing is closed-->
+                        {% if not item.listing.active %}
+                            <h5><span class="badge bg-secondary">This listing is closed.</span></h5>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        {% empty %}         <!--If the watchlist is Empty-->
+            <div class="alert alert-primary" role="alert">Your Watchlist is EMPTY!</div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Create new listing |
+{% endblock %}
+
+{% block body %}
+<h2>Create a new listing</h2>
+
+    <form action = "{% url 'create' %}" method = "post">
+        {% csrf_token %}
+        <div class="container"> <!--For BootStraps's column model-->
+            <div class="row my-3">
+                <div class="col">Tell us what you're selling:</div>
+                <div class="col form-group">{{ form.title }}</div>
+            </div>
+            <div class="row my-3">
+                <div class="col">Provide a description for your item:</div>
+                <div class="col form-group">{{ form.description }}</div>
+            </div>
+            <div class="row my-3">
+                <div class="col">The bid should start at (in US$):</div>
+                <div class="col form-group">{{ form.starting_bid }}</div>
+            </div>
+            <div class="row my-3">
+                <div class="col">URL of the item image (if any):</div>
+                <div class="col form-group">{{ form.image }}</div>
+            </div>
+            <div class="row my-3">
+                <div class="col">Category:</div>
+                <div class="col form-group">{{ form.category }}</div>
+            </div>
+            <div><input type="submit" class="btn btn-primary" value = "Create"></div>
+        </div>
+    </form>
+{% endblock %}

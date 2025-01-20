@@ -1,0 +1,48 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    {{ category }} |
+{% endblock %}
+
+<!--Display all the active listings in the given category-->
+{% block body %}
+    <div class="container">         <!--Used BootStrap's column model-->
+        {% for item in active_listings %}
+            <a href="{% url 'listing' item.id %}" class="text-decoration-none link-secondary">
+                <div class="row m-3 p-3 border shadow-sm">
+                    <div class="col col-lg-3 col-sm-6">
+                        {% if item.image %}
+                            <img src = "{{ item.image }}" alt = "Item Image" class="img-fluid">
+                        {% else %}
+                            <!--Default image-->
+                            <img src = "https://lh3.googleusercontent.com/proxy/UrU1-G0C3TdaO9pbfM0kziiRDFgYYiWSaicnFqr-xbKJPHVR5LA27Pysr9BhbgQdec-zL773PA0p_DM8C2lnBJLyo9mPqm0WmifWhBcq8wKjJTo7qE3w3osCgBYFVXQ" alt = "Item Image" class="img-fluid">
+                        {% endif %}
+                    </div>
+                    <div class="col col-lg-9 col-sm-6">
+                        <h5>{{ item.title }}</h5>
+                        <p>{{ item.description }}</p>
+
+                        {{no.back}}     <!--A counter for counting the NO's-->
+                        {% for dict in bid_list %}
+                            {% if dict.listing == item.id %}        <!--Checks any bids placed on the listing-->
+                                <b>Current Bid: US${{ dict.max_bid|floatformat:-2 }}</b> <!--To remove trailing zeroes-->
+                            {% else %}
+                                {{no.increment}}
+                            {% endif %} 
+                        {% endfor %}
+                        {% if no.count == bid_list|length %}    <!--In case of no bids for this listing-->
+                            <b>Starting Bid: US${{ item.starting_bid }}</b>
+                        {% endif %}
+                        <!--Till here-->
+
+                        {% for dict in watchers %}      <!--Same logic for calculating the no. of watchers-->
+                            {% if dict.listing == item.id %}
+                                <span class="badge bg-secondary rounded-pill">{{ dict.user_count }} watching</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
