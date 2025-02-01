@@ -4,7 +4,7 @@ Commerce is a web-based project designed to create an eBay-like e-commerce aucti
 
 ### Description
 
-This project involves developing an online auction platform that enables users to interact through listings. Users can create auctions, place bids, add comments, and categorize their items. It supports authentication and personalized user experiences, including a watchlist for tracking specific listings.
+This project is an auction platform that enables users to interact through listings. Users can create auctions, place bids, add comments, and categorize their items. It supports authentication and personalized user experiences, including a watchlist for tracking specific listings.
 
 ### Getting Started
 
