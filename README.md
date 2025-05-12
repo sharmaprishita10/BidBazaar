@@ -1,6 +1,6 @@
-# Commerce
+# BidBazaar
 
-Commerce is a web-based project designed to create an eBay-like e-commerce auction site where users can post auction listings, place bids, comment on listings, and manage a personalized "Watchlist".
+BidBazaar is a web-based project designed to create an eBay-like e-commerce auction site where users can post auction listings, place bids, comment on listings, and manage a personalized "Watchlist".
 
 ### Description
 
